@@ -10,7 +10,7 @@ public class Tile {
 	 * 
 	 * @param v the value of this tile
 	 */
-	private Tile(int v) {
+	protected Tile(int v) {
 		float r = R.rng.nextFloat();
 		float g = R.rng.nextFloat();
 		float b = R.rng.nextFloat();
@@ -27,7 +27,7 @@ public class Tile {
 	 * @param v the value of this tile
 	 * @param c the color of this tile
 	 */
-	private Tile(int v, Color c) {
+	protected Tile(int v, Color c) {
 		this.value = v;
 		this.color = c;
 	}
