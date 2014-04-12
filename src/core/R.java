@@ -1,15 +1,18 @@
 package core;
 
+import java.util.Map;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Random;
 import java.io.FileReader;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 
 public class R {
-	protected static HashMap<Integer,Tile> tiles;
-	protected static HashMap<String,String> strings;
-	protected static HashMap<String,Integer> gameSettings;
+	protected static Map<Integer,Tile> tiles;
+	protected static Map<String,String> strings;
+	protected static Map<String,Integer> gameSettings;
+	protected static Map<Integer, Direction> keyBindings;
 	
 	protected static Random rng;
 	
@@ -18,6 +21,7 @@ public class R {
 		loadStrings("res/strings");
 		loadTiles("conf/tiles.conf");
 		loadGameSettings("conf/gameSettings.conf");
+		loadKeyBindings();
 	}
 	
 	private static void loadTiles(String path) {
@@ -75,5 +79,13 @@ public class R {
 		catch (Exception e) {
 			System.out.println(e);
 		}
+	}
+	
+	private static void loadKeyBindings() {
+		keyBindings = new HashMap<Integer, Direction>();
+		keyBindings.put(KeyEvent.VK_UP, Direction.UP);
+		keyBindings.put(KeyEvent.VK_DOWN, Direction.DOWN);		
+		keyBindings.put(KeyEvent.VK_LEFT, Direction.LEFT);
+		keyBindings.put(KeyEvent.VK_RIGHT, Direction.RIGHT);
 	}
 }
