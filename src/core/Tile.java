@@ -1,71 +1,38 @@
 package core;
-import java.awt.Color;
 
 public class Tile {
 	private int value;
-	private Color color;
+	private int row, col;
+	private Grid grid;
 	
 	/**
-	 * Creates a tile with a Random color.
+	 * Creates a tile with the specified row and column coordinates.
 	 * 
 	 * @param v the value of this tile
+	 * @param row the row of this tile
+	 * @param col the column of this tile
+	 * @param g the Grid instance 
 	 */
-	protected Tile(int v) {
-		float r = R.rng.nextFloat();
-		float g = R.rng.nextFloat();
-		float b = R.rng.nextFloat();
-		
-		Color c = new Color(r,g,b);
-		
+	protected Tile(int v, int row, int col, Grid g) {
 		this.value = v;
-		this.color = c;
-	}
-	
-	/**
-	 * Creates a tile with a specified value and color.
-	 * 
-	 * @param v the value of this tile
-	 * @param c the color of this tile
-	 */
-	protected Tile(int v, Color c) {
-		this.value = v;
-		this.color = c;
+		this.row = row;
+		this.col = col;
+		this.grid = g;
 	}
 	
 	public int getValue() {
 		return value;
 	}
 	
-	public Color getColor() {
-		return color;
+	public int getRow() {
+		return row;
 	}
 	
-	/**
-	 * Combines this tile with another tile and returns the result.
-	 * If the value of the new tile has not been used before, a random
-	 * color is generated for the new tile.
-	 * 
-	 * @param other the other tile
-	 * @return a tile that is the combination of <code>this</code> and other.
-	 */
-	public Tile combine(Tile other) {
-		int newValue = this.value + other.getValue();
-		Tile t = getTileByValue(newValue);
-		
-		if (t == null) {
-			t = new Tile(newValue);
-			R.tiles.put(t.getValue(), t);
-		}
-		
-		return t;
+	public int getCol() {
+		return col;
 	}
 	
-	/**
-	 * Looks up and returns the Tile associated with the specified value.
-	 * @param value
-	 * @return the tile associated with <code>value</code>, null if there is no such tile.
-	 */
-	public static Tile getTileByValue(int value) {
-		return R.tiles.get(value);
+	public boolean setLocation(int row, int col) {
+		return grid.setTile(row, col, this);
 	}
 }

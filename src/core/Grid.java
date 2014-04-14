@@ -37,18 +37,37 @@ public class Grid {
 	public Grid(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
+		reset();
 	}
 	
 	public void reset() {
 		grid = new Tile[rows][cols];
-		int startingTiles = R.gameSettings.get("starting_tiles");
-		
-		for (int tilesAdded = 0; tilesAdded < startingTiles; tilesAdded++) {
-			addRandomTile();
-		}
-			
+	}	
+	
+	public Tile getTile(int row, int col) {
+		return grid[row][col];
 	}
 	
+	public boolean setTile(Location loc, Tile t) {
+		return setTile(loc.getX(), loc.getY(), t);
+	}
+	
+	public boolean setTile(int newRow, int newCol, Tile t) {
+		// cannot move to an occupied Tile		
+		if (!isEmpty(newRow, newCol)) {
+			return false;
+		}
+		
+		int oldRow = t.getRow();
+		int oldCol = t.getCol();
+		
+		grid[oldRow][oldCol] = null;
+		grid[newRow][newCol] = t;
+		
+		return true;
+	}
+	
+
 	public boolean isEmpty(int row, int col) {
 		return grid[row][col] == null;
 	}
@@ -80,26 +99,5 @@ public class Grid {
 		int randomIndex = R.rng.nextInt(locs.size());
 		
 		return locs.get(randomIndex);
-	}
-	
-	public boolean addRandomTile() {
-		Location loc = getRandomEmptyLocation();
-		
-		if (loc == null) {
-			return false;
-		}
-		
-		int value = 2 << R.rng.nextInt(2);
-		grid[loc.getX()][loc.getY()] = Tile.getTileByValue(value);
-		
-		return true;
-	}
-	
-	public boolean shift(Direction d) {
-		boolean moved = false;
-		
-		
-		
-		return moved;
 	}
 }

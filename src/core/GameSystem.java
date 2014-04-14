@@ -1,7 +1,9 @@
 package core;
 
+import core.Grid.Location;
+
 public class GameSystem {
-	private Tile[][] grid;
+	private Grid grid;
 	private int rows, cols;
 	
 	public GameSystem() {
@@ -9,12 +11,10 @@ public class GameSystem {
 	}
 	
 	public GameSystem(int rows, int cols) {
-		new R();
-		
 		this.rows = rows;
 		this.cols = cols;
 		
-		this.grid = new Tile[rows][cols];
+		this.grid = new Grid(rows, cols);
 		newGame();
 	}
 	
@@ -22,14 +22,10 @@ public class GameSystem {
 		int startingTiles = R.gameSettings.get("starting_tiles"); 
 		int tiles = 0;
 		
+		grid.reset();
+		
 		while (tiles < startingTiles) {
-			int x = R.rng.nextInt(rows);
-			int y = R.rng.nextInt(cols);
-			
-			int value = 2 << R.rng.nextInt(2);
-
-			grid[x][y] = Tile.getTileByValue(value);
-			
+			addRandomTile();
 			tiles++;
 		}
 	}
@@ -37,16 +33,32 @@ public class GameSystem {
 	public void printGrid() {
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				Tile t = grid[i][j];
+				Tile t = grid.getTile(i, j);
 				
 				System.out.print(t == null ? 0 : t.getValue());
 			}
 			System.out.println();
 		}
 	}
-	
-	public void addRandomTile() {
+
+	public boolean shiftTile(Tile t, Direction d) {
+		boolean moved = false;
 		
+		return moved;
+	}
+	
+	public boolean addRandomTile() {
+		Location loc = grid.getRandomEmptyLocation();
+		
+		if (loc == null) {
+			return false;
+		}
+		
+		int value = 2 << R.rng.nextInt(2);
+		Tile t = new Tile(value, loc.getX(), loc.getY(), grid);
+		grid.setTile(loc, t);
+		
+		return true;
 	}
 	
 	public void makeMove() {
