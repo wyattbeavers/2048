@@ -41,8 +41,39 @@ public class GameSystem {
 		}
 	}
 
+	public boolean shiftGrid(Direction d) {
+		boolean moved = false;
+		
+		for (int row = 0; row < grid.getRows(); row++) {
+			for (int col = 0; col < grid.getCols(); col++) {
+				Tile t = grid.getTile(row, col);
+				
+				if (t != null) {
+					moved |= shiftTile(t, d);
+				}
+			}
+		}
+		
+		return moved;
+	}
+	
 	public boolean shiftTile(Tile t, Direction d) {
 		boolean moved = false;
+		
+		int newX = t.getRow();
+		int newY = t.getCol();
+		
+		while (grid.isValidLocation(newX + d.getX(), newY + d.getY()) && 
+				grid.isEmpty(newX + d.getX(), newY + d.getY())) {
+			moved = true;
+
+			newX += d.getX();
+			newY += d.getY();
+		}
+		
+		if (moved) {
+			grid.setTile(newX, newY,t);
+		}
 		
 		return moved;
 	}
@@ -55,14 +86,10 @@ public class GameSystem {
 		}
 		
 		int value = 2 << R.rng.nextInt(2);
-		Tile t = new Tile(value, loc.getX(), loc.getY(), grid);
+		Tile t = new Tile(value, loc.getRow(), loc.getCol());
 		grid.setTile(loc, t);
 		
 		return true;
-	}
-	
-	public void makeMove() {
-		
 	}
 	
 	public boolean isGameOver() {
