@@ -9,7 +9,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 public class R {
-	protected static Map<Integer,Color> tilesColors;
+	protected static Map<Integer,Color> tileColors;
 	protected static Map<String,String> strings;
 	protected static Map<String,Integer> gameSettings;
 	protected static Map<Integer, Direction> keyBindings;
@@ -31,13 +31,13 @@ public class R {
 			
 			p.load(f);
 			
-			tilesColors = new HashMap<Integer,Color>();
+			tileColors = new HashMap<Integer,Color>();
 			
 			for (String s: p.stringPropertyNames()) {
 				int value = Integer.parseInt(s);
 				int rgb = Integer.parseInt(p.getProperty(s), 16);
 
-				tilesColors.put(value, new Color(rgb));
+				tileColors.put(value, new Color(rgb));
 			}
 		}
 		catch (Exception e) {

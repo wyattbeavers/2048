@@ -1,6 +1,7 @@
 package core;
 
 import core.Grid.Location;
+import java.util.List;
 
 public class GameSystem {
 	private Grid grid;
@@ -41,16 +42,16 @@ public class GameSystem {
 		}
 	}
 
-	public boolean shiftGrid(Direction d) {
+	public boolean shiftTiles(Direction d) {
 		boolean moved = false;
 		
-		for (int row = 0; row < grid.getRows(); row++) {
-			for (int col = 0; col < grid.getCols(); col++) {
-				Tile t = grid.getTile(row, col);
-				
-				if (t != null) {
-					moved |= shiftTile(t, d);
-				}
+		List<Location> locs = grid.getLocationsInTraverseOrder(d);
+		
+		for (Location loc : locs) {
+			Tile t = grid.getTile(loc);
+			
+			if (t != null) {
+				moved |= shiftTile(t,d);
 			}
 		}
 		
@@ -62,7 +63,7 @@ public class GameSystem {
 		
 		int newX = t.getRow();
 		int newY = t.getCol();
-		
+				
 		while (grid.isValidLocation(newX + d.getX(), newY + d.getY()) && 
 				grid.isEmpty(newX + d.getX(), newY + d.getY())) {
 			moved = true;
@@ -78,6 +79,12 @@ public class GameSystem {
 		return moved;
 	}
 	
+	/**
+	 * Adds a tile to a random empty location.  The tile has a value of 2
+	 * with probability 90%, or has a value of 4 with probability 10%.
+	 * 
+	 * @return true if a Tile was added, false if the grid was full.
+	 */
 	public boolean addRandomTile() {
 		Location loc = grid.getRandomEmptyLocation();
 		
@@ -85,7 +92,7 @@ public class GameSystem {
 			return false;
 		}
 		
-		int value = 2 << R.rng.nextInt(2);
+		int value = (R.rng.nextFloat() < 0.9 ? 2 : 4);
 		Tile t = new Tile(value, loc.getRow(), loc.getCol());
 		grid.setTile(loc, t);
 		
