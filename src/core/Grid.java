@@ -109,7 +109,11 @@ public class Grid {
 
 		return true;
 	}
-
+	
+	public void removeTile(Tile t) {
+		grid[t.getRow()][t.getCol()] = null;
+	}
+	
 	/**
 	 * Tests if the specified row and column is empty.
 	 * 
@@ -180,5 +184,10 @@ public class Grid {
 		}
 		
 		return locs;
+	}
+	
+	//TODO
+	public Location getFarthestEmptyLocation(Tile t, Direction d) {
+		return null;
 	}
 }

@@ -3,6 +3,14 @@ package core;
 public class Tile {
 	private int value;
 	private int row, col;
+	private boolean merged;
+	
+	/**
+	 * Creates an 
+	 */
+	protected Tile(int v, int row, int col) {
+		this(v, row, col, false);
+	}
 	
 	/**
 	 * Creates a tile with the specified row and column coordinates.
@@ -10,11 +18,13 @@ public class Tile {
 	 * @param v the value of this tile
 	 * @param row the row of this tile
 	 * @param col the column of this tile
+	 * @param merged whether the tile was formed by merging with another tile.
 	 */
-	protected Tile(int v, int row, int col) {
+	protected Tile(int v, int row, int col, boolean merged) {
 		this.value = v;
 		this.row = row;
 		this.col = col;
+		this.merged = merged;
 	}
 	
 	/**
@@ -66,5 +76,13 @@ public class Tile {
 	public void setLocation(int newRow, int newCol) {
 		this.row = newRow;
 		this.col = newCol;
+	}
+
+	public boolean isMerged() {
+		return this.merged;
+	}
+	
+	public String toString() {
+		return "Tile value: " + this.value + " at (" + this.row + "," + this.col + ")";
 	}
 }

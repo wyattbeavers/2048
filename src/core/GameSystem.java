@@ -41,9 +41,16 @@ public class GameSystem {
 			System.out.println();
 		}
 	}
-
+	
+	//TODO
+	public void resetTileMergeStatus() {
+		
+	}
+	
 	public boolean shiftTiles(Direction d) {
 		boolean moved = false;
+		
+		resetTileMergeStatus();
 		
 		List<Location> locs = grid.getLocationsInTraverseOrder(d);
 		
@@ -61,19 +68,31 @@ public class GameSystem {
 	public boolean shiftTile(Tile t, Direction d) {
 		boolean moved = false;
 		
-		int newX = t.getRow();
-		int newY = t.getCol();
-				
-		while (grid.isValidLocation(newX + d.getX(), newY + d.getY()) && 
-				grid.isEmpty(newX + d.getX(), newY + d.getY())) {
-			moved = true;
-
-			newX += d.getX();
-			newY += d.getY();
-		}
+		int prevRow = t.getRow();
+		int prevCol = t.getCol();
 		
-		if (moved) {
-			grid.setTile(newX, newY,t);
+		int nextRow = prevRow + d.getX();
+		int nextCol = prevCol + d.getY();
+				
+		while (grid.isValidLocation(nextRow, nextCol) && 
+				grid.isEmpty(nextRow, nextCol)) {
+			moved = true;
+			grid.setTile(nextRow, nextCol, t);
+
+			prevRow = nextRow;
+			prevCol = nextCol;
+				
+			nextRow += d.getX();
+			nextCol += d.getY();
+		}
+		if (grid.isValidLocation(nextRow, nextCol) && 
+				isValidMerge(t, grid.getTile(nextRow, nextCol))){
+			moved = true;
+			Tile merged = new Tile(t.getValue() +grid.getTile(nextRow,nextCol).getValue(), nextRow, nextCol,true);
+
+			grid.removeTile(t);
+			grid.removeTile(grid.getTile(nextRow,nextCol));
+			grid.setTile(nextRow, nextCol, merged);
 		}
 		
 		return moved;
@@ -103,7 +122,8 @@ public class GameSystem {
 		return false;
 	}
 		
-	public boolean isLegalCombination(Tile first, Tile second) {
-		return first.getValue() == second.getValue();
+	public boolean isValidMerge(Tile first, Tile second) {
+		return first.getValue() == second.getValue() &&
+				!first.isMerged() && !second.isMerged();
 	}
 }
