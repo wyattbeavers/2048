@@ -47,40 +47,95 @@ public class Grid {
 	 * Creates a grid using the default game settings 
 	 */
 	public Grid() {
-		this(R.gameSettings.get("rows"),R.gameSettings.get("cols"));
-	}
-
-	public Grid(int rows, int cols) {
-		this.rows = rows;
-		this.cols = cols;
+		this.rows = R.gameSettings.get("rows");
+		this.cols = R.gameSettings.get("cols");
 		grid = new Tile[rows][cols];
 	}
-
+	
+	/**
+	 * Returns the number of rows in the grid.
+	 * 
+	 * @return the number of rows in the grid
+	 */
 	public int getRows() {
 		return rows;
 	}
 
+	/**
+	 * Returns the number of columns in the grid.
+	 * 
+	 * @return the number of columns in the grid
+	 */
 	public int getCols() {
 		return cols;
 	}
-
+	
+	/**
+	 * Tests if the specified location is within the grid.
+	 * 
+	 * @param row the row
+	 * @param col the column
+	 * @return true, if the specified location is within the grid
+	 */
 	public boolean isValidLocation(int row, int col) {
 		return (row < this.rows && row >= 0) &&
 				(col < this.cols && col >= 0);
 	}
-
+	
+	/**
+	 * Removes all Tiles from the grid.
+	 */
 	public void reset() {
 		grid = new Tile[rows][cols];
 	}	
-
+	
+	/**
+	 * Returns the Tile at the specified location.  If the location is
+	 * empty, null is returned.
+	 * 
+	 * @param row the row
+	 * @param col the column
+	 * @return the Tile at the specified location
+	 */
 	public Tile getTile(int row, int col) {
 		return grid[row][col];
 	}
-	
+
+	/**
+	 * Returns the Tile at the specified location.  If the location is
+	 * empty, null is returned.
+	 * 
+	 * @param loc the location
+	 * @return the Tile at the specified location
+	 */
 	public Tile getTile(Location loc) {
 		return getTile(loc.getRow(), loc.getCol());
 	}
-
+	
+	/**
+	 * Returns the <i>i</i>th Tile in the Grid assuming a left-to-right,
+	 * up-to-down traversal.  For example:
+	 * 
+	 * Location: (0,0)  (0,1)  (0,2)
+	 * Index:      0      1      2
+	 * 
+	 * @param index
+	 * @return the <i>i</i>th Tile in the Grid
+	 */
+	public Tile getTileByIndex(int index) {
+		int row = index / this.cols;
+		int col = index % this.cols;
+		
+		return getTile(row, col);
+	}
+	
+	/**
+	 * Moves a tile to the specified location in the Grid.
+	 * 
+	 * @param loc the location
+	 * @param t the tile
+	 * @return false if the specified location is occupied, true otherwise
+	 */
 	public boolean setTile(Location loc, Tile t) {
 		return setTile(loc.getRow(), loc.getCol(), t);
 	}
@@ -110,6 +165,12 @@ public class Grid {
 		return true;
 	}
 	
+	/**
+	 * Removes a tile from the Grid.  References to the tile should be discarded.
+	 * This method does not modify any attributes of the Tile.  
+	 * 
+	 * @param t the tile
+	 */
 	public void removeTile(Tile t) {
 		grid[t.getRow()][t.getCol()] = null;
 	}
@@ -184,6 +245,24 @@ public class Grid {
 		}
 		
 		return locs;
+	}
+	
+	/** 
+	 * Returns a List of all non-empty Tiles in the grid.
+	 * 
+	 * @return a List of all non-empty Tiles in the grid
+	 */
+	public List<Tile> getNonEmptyTiles() {
+		List<Tile> tiles = new ArrayList<Tile>();
+		
+		for (int row = 0; row < this.rows; row++) {
+			for (int col = 0; col < this.cols; col++) {
+				if (!isEmpty(row, col)) {
+					tiles.add(getTile(row,col));
+				}
+			}
+		}
+		return tiles;
 	}
 	
 	//TODO

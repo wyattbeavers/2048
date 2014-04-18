@@ -6,13 +6,6 @@ public class Tile {
 	private boolean merged;
 	
 	/**
-	 * Creates an 
-	 */
-	protected Tile(int v, int row, int col) {
-		this(v, row, col, false);
-	}
-	
-	/**
 	 * Creates a tile with the specified row and column coordinates.
 	 * 
 	 * @param v the value of this tile
@@ -20,11 +13,11 @@ public class Tile {
 	 * @param col the column of this tile
 	 * @param merged whether the tile was formed by merging with another tile.
 	 */
-	protected Tile(int v, int row, int col, boolean merged) {
+	protected Tile(int v, int row, int col) {
 		this.value = v;
 		this.row = row;
 		this.col = col;
-		this.merged = merged;
+		this.merged = false;
 	}
 	
 	/**
@@ -55,6 +48,15 @@ public class Tile {
 	}	
 	
 	/**
+	 * Tests whether the tile was formed by merging two tiles.
+	 * 
+	 * @return true, if the tile was formed by merging two tiles.
+	 */
+	public boolean isMerged() {
+		return this.merged;
+	}
+	
+	/**
 	 * Sets the value of the tile.
 	 * 
 	 * @param newValue the new value for the tile
@@ -77,12 +79,13 @@ public class Tile {
 		this.row = newRow;
 		this.col = newCol;
 	}
-
-	public boolean isMerged() {
-		return this.merged;
-	}
 	
-	public String toString() {
-		return "Tile value: " + this.value + " at (" + this.row + "," + this.col + ")";
+	/**
+	 * Sets the merge status of the tile.
+	 * 
+	 * @param merged the merge status.
+	 */
+	public void setMerged(boolean merged) {
+		this.merged = merged;
 	}
 }

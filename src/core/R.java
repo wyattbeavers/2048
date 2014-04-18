@@ -8,6 +8,9 @@ import java.io.FileReader;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
+/**
+ * Useful constants, game settings, etc.
+ */
 public class R {
 	protected static Map<Integer,Color> tileColors;
 	protected static Map<String,String> strings;

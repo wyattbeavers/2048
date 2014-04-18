@@ -5,22 +5,25 @@ import java.util.List;
 
 public class GameSystem {
 	private Grid grid;
-	private int rows, cols;
+	private int score;
 	
 	public GameSystem() {
-		this(R.gameSettings.get("rows"),R.gameSettings.get("cols"));
-	}
-	
-	public GameSystem(int rows, int cols) {
-		this.rows = rows;
-		this.cols = cols;
-		
-		this.grid = new Grid(rows, cols);
+		this.grid = new Grid();
+		this.score = 0;
 		newGame();
 	}
 	
+	public Grid getGrid() {
+		return grid;
+	}
+	
+	public int getScore() {
+		return score;
+	}
+	
 	public void newGame() {
-		int startingTiles = R.gameSettings.get("starting_tiles"); 
+		score = 0;
+		int startingTiles = R.gameSettings.get("starting_tiles");
 		int tiles = 0;
 		
 		grid.reset();
@@ -32,8 +35,8 @@ public class GameSystem {
 	}
 	
 	public void printGrid() {
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
+		for (int i = 0; i < grid.getRows(); i++) {
+			for (int j = 0; j < grid.getCols(); j++) {
 				Tile t = grid.getTile(i, j);
 				
 				System.out.print(t == null ? 0 : t.getValue());
@@ -42,15 +45,16 @@ public class GameSystem {
 		}
 	}
 	
-	//TODO
 	public void resetTileMergeStatus() {
+		List<Tile> tiles = grid.getNonEmptyTiles();
 		
+		for (Tile t : tiles) {
+			t.setMerged(false);
+		}
 	}
 	
 	public boolean shiftTiles(Direction d) {
 		boolean moved = false;
-		
-		resetTileMergeStatus();
 		
 		List<Location> locs = grid.getLocationsInTraverseOrder(d);
 		
@@ -88,11 +92,14 @@ public class GameSystem {
 		if (grid.isValidLocation(nextRow, nextCol) && 
 				isValidMerge(t, grid.getTile(nextRow, nextCol))){
 			moved = true;
-			Tile merged = new Tile(t.getValue() +grid.getTile(nextRow,nextCol).getValue(), nextRow, nextCol,true);
+			Tile merged = new Tile(t.getValue() + grid.getTile(nextRow,nextCol).getValue(), nextRow, nextCol);
+			merged.setMerged(true);
 
 			grid.removeTile(t);
 			grid.removeTile(grid.getTile(nextRow,nextCol));
 			grid.setTile(nextRow, nextCol, merged);
+			
+			score += merged.getValue();
 		}
 		
 		return moved;
@@ -118,10 +125,37 @@ public class GameSystem {
 		return true;
 	}
 	
-	public boolean isGameOver() {
-		return false;
-	}
+	/**
+	 * Attempts to shift and merge tiles based on the specified Direction.
+	 * If at least one Tile changes location or merges, a random Tile is added
+	 * to the grid.
+	 * 
+	 * @param d the Direction
+	 */
+	public void makeMove(Direction d) {
+		resetTileMergeStatus();
 		
+		boolean moved = shiftTiles(d);
+		
+		if (moved) {
+			addRandomTile();
+		}
+	}
+	
+	//TODO
+	public boolean isGameOver() {
+		return grid.getEmptyLocations().isEmpty();
+	}
+	
+	/**
+	 * Tests if merging the specified Tiles is valid.  For a merge
+	 * to be valid, both Tiles must have the same value, and neither 
+	 * of the tiles can be the result of another merge.
+	 * 
+	 * @param first the first tile
+	 * @param second the second tile
+	 * @return true, if the tiles may be merged
+	 */
 	public boolean isValidMerge(Tile first, Tile second) {
 		return first.getValue() == second.getValue() &&
 				!first.isMerged() && !second.isMerged();
